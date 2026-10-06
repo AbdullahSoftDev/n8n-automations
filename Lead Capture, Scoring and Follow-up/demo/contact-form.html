@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Us</title>
+<style>
+  :root { --bg:#f5f6f8; --card:#fff; --text:#1c1f26; --muted:#6b7280; --accent:#ea4b71; --border:#d9dce3; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14161b; --card:#1d2027; --text:#eceef2; --muted:#9aa1ad; --border:#2f343e; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+         background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,Segoe UI,sans-serif; padding:24px; }
+  .card { width:100%; max-width:440px; background:var(--card); border:1px solid var(--border);
+          border-radius:14px; padding:28px; }
+  h1 { margin:0 0 4px; font-size:22px; }
+  p.sub { margin:0 0 20px; color:var(--muted); font-size:14px; }
+  label { display:block; font-size:13px; margin:14px 0 6px; }
+  input, textarea { width:100%; padding:10px 12px; font:inherit; color:var(--text); background:transparent;
+                    border:1px solid var(--border); border-radius:8px; }
+  input:focus, textarea:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  textarea { min-height:100px; resize:vertical; }
+  button { margin-top:20px; width:100%; padding:12px; font:inherit; font-weight:600; color:#fff;
+           background:var(--accent); border:0; border-radius:8px; cursor:pointer; }
+  button:disabled { opacity:.6; cursor:wait; }
+  #status { margin-top:14px; font-size:14px; min-height:20px; }
+  .ok { color:#16a34a; } .err { color:#dc2626; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Get in touch</h1>
+    <p class="sub">Tell us what you need and we'll reply shortly.</p>
+    <div id="form">
+      <label for="name">Name</label>
+      <input id="name" type="text" autocomplete="name">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="email">
+      <label for="company">Company (optional)</label>
+      <input id="company" type="text" autocomplete="organization">
+      <label for="message">Message</label>
+      <textarea id="message"></textarea>
+      <button id="send" type="button">Send message</button>
+      <div id="status" role="status"></div>
+    </div>
+  </div>
+
+<script>
+  // Production webhook URL of your n8n workflow (workflow must be published)
+  const WEBHOOK_URL = "http://localhost:5678/webhook/new-lead";
+
+  const btn = document.getElementById("send");
+  const status = document.getElementById("status");
+
+  btn.addEventListener("click", async () => {
+    const payload = {
+      name: document.getElementById("name").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      company: document.getElementById("company").value.trim(),
+      message: document.getElementById("message").value.trim()
+    };
+
+    if (!payload.name || !payload.email || !payload.message) {
+      status.className = "err";
+      status.textContent = "Please fill in name, email and message.";
+      return;
+    }
+
+    btn.disabled = true;
+    status.className = "";
+    status.textContent = "Sending...";
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error("Server returned " + res.status);
+      status.className = "ok";
+      status.textContent = "Thanks! Your message was sent. Check your inbox.";
+      ["name","email","company","message"].forEach(id => document.getElementById(id).value = "");
+    } catch (e) {
+      status.className = "err";
+      status.textContent = "Could not send. Is n8n running and the workflow published?";
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

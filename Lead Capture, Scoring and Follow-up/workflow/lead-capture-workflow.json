@@ -1,0 +1,167 @@
+{
+  "name": "Lead Capture, Scoring and Follow-up",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-lead",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000001",
+      "name": "New Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "new-lead-webhook"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const freeDomains = ['gmail.com','yahoo.com','hotmail.com','outlook.com','icloud.com'];\nconst hotWords = ['quote','pricing','price','budget','demo','urgent','asap','buy','proposal','contract'];\n\nreturn $input.all().map(item => {\n  const b = item.json.body || item.json;\n  const name = (b.name || '').trim();\n  const email = (b.email || '').trim().toLowerCase();\n  const company = (b.company || '').trim();\n  const message = (b.message || '').trim();\n  const domain = email.split('@')[1] || '';\n\n  let score = 0;\n  if (company) score += 20;\n  if (domain && !freeDomains.includes(domain)) score += 25;\n  if (message.length > 80) score += 15;\n  const text = message.toLowerCase();\n  const hits = hotWords.filter(w => text.includes(w)).length;\n  score += Math.min(hits * 15, 40);\n  score = Math.min(score, 100);\n\n  return {\n    json: {\n      name,\n      email,\n      company,\n      message,\n      score,\n      status: score >= 60 ? 'Hot' : 'Nurture',\n      receivedAt: new Date().toISOString()\n    }\n  };\n});"
+      },
+      "id": "a1000000-0000-4000-8000-000000000002",
+      "name": "Clean and Score Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_GOOGLE_SHEET_ID"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Received At": "={{ $json.receivedAt }}",
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Company": "={{ $json.company }}",
+            "Message": "={{ $json.message }}",
+            "Score": "={{ $json.score }}",
+            "Status": "={{ $json.status }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000003",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [500, 160]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "hot-lead-check",
+              "leftValue": "={{ $json.score }}",
+              "rightValue": 60,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000004",
+      "name": "Is Hot Lead?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [500, 440]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "#sales"
+        },
+        "text": "=🔥 *Hot lead* (score {{ $json.score }})\n*Name:* {{ $json.name }}\n*Company:* {{ $json.company || 'n/a' }}\n*Email:* {{ $json.email }}\n*Message:* {{ $json.message }}",
+        "otherOptions": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000005",
+      "name": "Alert Sales on Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [760, 340]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Thanks for reaching out, we'll be in touch today",
+        "message": "=<p>Hi {{ $json.name || 'there' }},</p><p>Thanks for getting in touch. Your message has gone straight to our team and someone will contact you personally within a few hours.</p><p>Best regards,<br>YOUR BUSINESS NAME</p>",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000006",
+      "name": "Priority Reply to Lead",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [760, 520]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Thanks for contacting us",
+        "message": "=<p>Hi {{ $json.name || 'there' }},</p><p>Thanks for your message. We've received it and will reply within 1-2 business days. In the meantime, feel free to browse our website for more info.</p><p>Best regards,<br>YOUR BUSINESS NAME</p>",
+        "options": {}
+      },
+      "id": "a1000000-0000-4000-8000-000000000007",
+      "name": "Standard Reply to Lead",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [760, 700]
+    }
+  ],
+  "connections": {
+    "New Lead Webhook": {
+      "main": [
+        [
+          { "node": "Clean and Score Lead", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Clean and Score Lead": {
+      "main": [
+        [
+          { "node": "Log to Google Sheets", "type": "main", "index": 0 },
+          { "node": "Is Hot Lead?", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Is Hot Lead?": {
+      "main": [
+        [
+          { "node": "Alert Sales on Slack", "type": "main", "index": 0 },
+          { "node": "Priority Reply to Lead", "type": "main", "index": 0 }
+        ],
+        [
+          { "node": "Standard Reply to Lead", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
