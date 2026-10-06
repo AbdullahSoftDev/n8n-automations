@@ -1,6 +1,6 @@
 <div align="center">
 
-# n8n Automations
+# N8N Automations
 
 ### A growing collection of production-minded automation agents built with n8n.
 
