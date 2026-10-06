@@ -1,6 +1,7 @@
-<div align="center>
+# N8N Lead Capture, Scoring & Follow-up
 
-# Lead Capture, Scoring & Follow-up
+<div align="center>
+#Lead Capture, Scoring & Follow-up
 
 ### Turn incoming website inquiries into scored, prioritized, and automatically followed-up leads.
 
