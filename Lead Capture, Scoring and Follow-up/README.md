@@ -1,74 +1,170 @@
-# n8n Lead Capture, Scoring & Follow-up
+<div align="center>
 
-An n8n workflow that takes a new lead from a website form, scores it, logs it to Google Sheets, alerts the sales team on Slack when it is a hot lead, and replies to the lead by email, all within seconds and without manual work.
+# Lead Capture, Scoring & Follow-up
 
-> **Status:** working end to end on a self-hosted n8n instance. Built as a portfolio project.
+### Turn incoming website inquiries into scored, prioritized, and automatically followed-up leads.
 
-## The problem
+<p>
+  <img src="https://img.shields.io/badge/n8n-Automation-EA4B71?logo=n8n&logoColor=white" alt="n8n">
+  <img src="https://img.shields.io/badge/Google%20Sheets-CRM%20Log-34A853?logo=google-sheets&logoColor=white" alt="Google Sheets">
+  <img src="https://img.shields.io/badge/Slack-Sales%20Alerts-4A154B?logo=slack&logoColor=white" alt="Slack">
+  <img src="https://img.shields.io/badge/Gmail-Automated%20Reply-EA4335?logo=gmail&logoColor=white" alt="Gmail">
+</p>
 
-Small businesses lose leads because inquiries sit unanswered and nobody can tell which ones are worth calling first. This workflow answers every lead immediately and flags the promising ones.
+<p>
+  <a href="https://github.com/AbdullahSoftDev/n8n-automations">Automation Library</a> ·
+  <a href="../">All Agents</a>
+</p>
 
-## How it works
+</div>
+
+---
+
+## 🎯 Overview
+
+**Lead Capture, Scoring & Follow-up** is an end-to-end n8n automation that turns a website inquiry into an immediately processed lead.
+
+The workflow receives a lead through a webhook, cleans the submitted data, calculates a **0–100 lead score**, records the lead in Google Sheets, identifies high-value opportunities, alerts the sales team through Slack, and automatically sends the appropriate email response.
+
+> **Result:** Less manual triage, faster responses, and a clear priority for the sales team.
+
+## 💡 The Business Problem
+
+When website inquiries are handled manually, businesses commonly face three problems:
+
+- Leads can remain unanswered for too long.
+- Sales teams spend time manually deciding which leads deserve priority.
+- Important context is scattered across forms, inboxes, and spreadsheets.
+
+This automation creates a simple pipeline:
+
+**Capture → Clean → Score → Log → Prioritize → Alert → Respond**
+
+## 🔄 Workflow
 
 ```mermaid
 flowchart LR
-    A[Website form] -->|POST| B[Webhook]
-    B --> C[Clean and score lead]
-    C --> D[(Google Sheets log)]
-    C --> E{Score >= 60?}
-    E -->|Hot| F[Slack alert to sales]
-    E -->|Hot| G[Priority email reply]
-    E -->|Nurture| H[Standard email reply]
+    A[Website Form] -->|POST| B[Webhook]
+    B --> C[Clean & Score Lead]
+    C --> D[(Google Sheets)]
+    C --> E{Score ≥ 60?}
+    E -->|Hot| F[Slack Sales Alert]
+    E -->|Hot| G[Priority Email]
+    E -->|Nurture| H[Standard Email]
 ```
 
-1. **Webhook** receives the lead (`name`, `email`, `company`, `message`).
-2. **Code node** cleans the fields and calculates a score from 0 to 100.
-3. **Google Sheets** appends every lead as a row, including score and status.
-4. **IF node** splits leads at a score of 60.
-5. **Hot leads** trigger a Slack message and a priority email.
-6. **Other leads** get a standard "we'll reply in 1-2 business days" email and are marked `Nurture`.
+### Execution flow
 
-## Scoring rules
+| Step | Action | Outcome |
+|---|---|---|
+| 01 | **Webhook** | Receives name, email, company, and message |
+| 02 | **Code** | Cleans the input and calculates a 0–100 score |
+| 03 | **Google Sheets** | Stores the lead, score, and status |
+| 04 | **IF** | Routes the lead based on score |
+| 05 | **Slack** | Alerts the sales team for hot leads |
+| 06 | **Email** | Sends a priority or standard response |
 
-The score is rule-based (no AI, no API cost) and easy to change in the Code node.
+## 🧠 Lead Scoring
+
+The scoring engine is deliberately **rule-based**, making it transparent, predictable, and easy to customize.
 
 | Signal | Points |
-|---|---|
+|---|---:|
 | Company name provided | +20 |
-| Business email domain (not Gmail, Yahoo, etc.) | +25 |
+| Business email domain | +25 |
 | Message longer than 80 characters | +15 |
-| Buying keywords (quote, pricing, budget, demo, urgent, ...) | +15 each, max +40 |
+| Buying-intent keywords | +15 each |
+| Maximum keyword bonus | +40 |
+| **Maximum score** | **100** |
 
-Total is capped at 100. A score of 60 or more is a **Hot** lead.
+### Lead classification
 
-## Tech stack
+- 🔥 **Hot** — score **60 or higher**
+- 🌱 **Nurture** — score **below 60**
 
-- [n8n](https://n8n.io) (self-hosted, Community Edition)
-- Google Sheets and Gmail (OAuth2)
-- Slack (bot token)
-- Plain HTML/JavaScript contact form (`demo/contact-form.html`)
+Buying-intent keywords include terms such as `quote`, `pricing`, `budget`, `demo`, `urgent`, and similar signals.
 
-## Repository contents
+## 🧩 Integrations
 
+| Integration | Role |
+|---|---|
+| **n8n** | Workflow orchestration |
+| **Webhook** | Lead intake |
+| **Google Sheets** | Lead database / logging |
+| **Slack** | Sales-team notifications |
+| **Gmail** | Automated lead responses |
+| **HTML / JavaScript** | Demo contact form |
+
+## 📁 Project Structure
+
+```text
+Lead Capture, Scoring and Follow-up/
+│
+├── workflow/
+│   └── lead-capture-workflow.json   # Importable n8n workflow
+├── demo/
+│   └── contact-form.html             # Example website form
+├── docs/
+│   └── screenshots / demo assets
+└── README.md                         # Documentation
 ```
-workflow/lead-capture-workflow.json   n8n workflow (import this)
-demo/contact-form.html                demo form that posts to the webhook
-docs/                                 screenshots and demo video
+
+## ⚙️ Setup
+
+### Prerequisites
+
+- A running n8n instance.
+- A Google account with access to Google Sheets and Gmail.
+- A Slack workspace where the automation can post messages.
+- A Google Sheet for lead storage.
+
+The workflow was built and tested on a **self-hosted n8n instance**.
+
+### 1. Start n8n
+
+```bash
+npx n8n
 ```
 
-## Setup
+Then open `http://localhost:5678`.
 
-1. **Run n8n**, for example with `npx n8n` or Docker, and open `http://localhost:5678`.
-2. **Create a Google Sheet** with a tab named `Leads` and these headers in row 1:
-   `Received At | Name | Email | Company | Message | Score | Status`
-3. **Import** `workflow/lead-capture-workflow.json` (Workflows, then the menu, then Import from file).
-4. **Connect credentials** in n8n:
-   - Google Sheets and Gmail: create an OAuth client in Google Cloud (enable the Sheets, Drive and Gmail APIs) and add n8n's redirect URL.
-   - Slack: create a Slack app with the `chat:write` and `chat:write.public` scopes and use its bot token.
-5. **Edit the nodes:** put your Sheet ID in the Google Sheets node, your channel in the Slack node, and your business name in the two email nodes.
-6. **Publish** the workflow to activate the production webhook URL.
+### 2. Create the Google Sheet
 
-## Test it
+Create a sheet with a tab named `Leads` and these headers:
+
+```text
+Received At | Name | Email | Company | Message | Score | Status
+```
+
+### 3. Import the workflow
+
+Import `workflow/lead-capture-workflow.json` into your n8n instance.
+
+### 4. Configure credentials
+
+**Google Sheets / Gmail**
+- Create or configure an OAuth application in Google Cloud.
+- Enable the required Google APIs.
+- Configure n8n OAuth redirect settings.
+- Connect the resulting credential in n8n.
+
+**Slack**
+- Create a Slack app.
+- Provide the required messaging scopes.
+- Connect the bot credential in n8n.
+- Select the channel used for hot-lead alerts.
+
+### 5. Configure the workflow
+
+Update the relevant nodes with the Google Sheet ID, Slack channel, business/company name, email content, and any desired scoring rules.
+
+### 6. Activate
+
+Activate the workflow and use the production webhook URL.
+
+## 🧪 Test the Automation
+
+### cURL
 
 ```bash
 curl -X POST "http://localhost:5678/webhook/new-lead" \
@@ -76,34 +172,102 @@ curl -X POST "http://localhost:5678/webhook/new-lead" \
   -d '{"name":"Sara Khan","email":"sara@acme.com","company":"Acme Ltd","message":"We need a quote and pricing for a demo, budget is ready."}'
 ```
 
-Expected result: a new row in the sheet with a score and the status `Hot`, a Slack alert, and a reply email to the lead address.
-
-On Windows PowerShell, use:
+### Windows PowerShell
 
 ```powershell
 Invoke-RestMethod -Method Post -Uri "http://localhost:5678/webhook/new-lead" -ContentType "application/json" -Body '{"name":"Sara Khan","email":"sara@acme.com","company":"Acme Ltd","message":"We need a quote and pricing for a demo, budget is ready."}'
 ```
 
-## Demo
+### Expected result
 
-<!-- Add after recording: -->
-<!-- ![Workflow canvas](docs/workflow.png) -->
-<!-- Demo video: link here -->
+- ✅ A new Google Sheets record
+- 🔢 A calculated lead score
+- 🔥 `Hot` classification for a high-intent lead
+- 🔔 Slack notification to the sales team
+- 📧 Priority email response to the lead
 
-## Known limitations
+## 🌐 Demo Form
 
-- It runs on `localhost`, so the webhook is only reachable while the machine is on. A public deployment needs an always-on server or a tunnel.
-- Google OAuth apps in Testing mode expire their tokens after about 7 days, so the Google credential must be re-authorized or the app published.
-- The webhook is open. For production, restrict CORS to the site's domain and add spam protection such as a CAPTCHA.
-- Scoring is rule-based and basic. It does not use a language model.
+The repository includes a simple HTML/JavaScript contact form at `demo/contact-form.html`. It demonstrates how a website can submit lead information directly to the n8n webhook.
 
-## Possible improvements
+For a production website, replace the local webhook URL with the deployed production endpoint and apply appropriate security controls.
 
-- Use an LLM to classify intent and urgency and to draft the reply.
-- Add a CRM step (HubSpot, Notion or Airtable).
-- Add WhatsApp or SMS follow-up.
-- Add error handling and a failure alert workflow.
+## 🔐 Security & Production Considerations
 
-## Author
+The included workflow is designed as a portfolio/demo automation and should be hardened before production use.
 
-Muhammad Abdullah · [GitHub](https://github.com/AbdullahSoftDev) · [LinkedIn](https://linkedin.com/in/abdullahsoftdev)
+Consider:
+- Restricting webhook access.
+- Validating and sanitizing all incoming fields.
+- Adding CAPTCHA or bot protection.
+- Applying rate limiting.
+- Restricting CORS to trusted origins.
+- Protecting n8n with authentication.
+- Monitoring failed workflow executions.
+- Adding an error-handling workflow.
+- Avoiding sensitive information in logs.
+
+> ⚠️ **Never commit API keys, OAuth secrets, passwords, or private credentials to the repository.**
+
+## ⚠️ Known Limitations
+
+- A local n8n instance is only reachable while the host is running.
+- Google OAuth applications in Testing mode may require periodic re-authorization.
+- The webhook requires additional protection before being exposed publicly.
+- Lead scoring is intentionally rule-based rather than AI-powered.
+- There is currently no dedicated CRM integration.
+
+## 🚀 Possible Improvements
+
+- 🤖 AI-powered intent and urgency classification
+- ✍️ AI-generated personalized replies
+- 🗂️ HubSpot, Salesforce, Airtable, or Notion integration
+- 💬 WhatsApp or SMS follow-up
+- 📅 Automated appointment booking
+- 🔁 Multi-step nurture sequences
+- 📊 Lead analytics dashboard
+- 🚨 Failure monitoring and alerting
+- 🧠 More advanced lead-scoring models
+- 🔄 Automated CRM lifecycle updates
+
+## 📊 Automation Value
+
+```text
+Website Inquiry
+      ↓
+Automatic Capture
+      ↓
+Lead Qualification
+      ↓
+Centralized Logging
+      ↓
+Priority Detection
+      ↓
+Sales Notification
+      ↓
+Immediate Response
+```
+
+The key advantage is not simply sending automated messages — it is **connecting the complete lead journey into one workflow**.
+
+## 👨‍💻 Author
+
+<div align="center">
+
+### Muhammad Abdullah
+
+Full-Stack Developer · AI Applications · Automation
+
+<a href="https://github.com/AbdullahSoftDev">GitHub</a> · <a href="https://linkedin.com/in/abdullahsoftdev">LinkedIn</a>
+
+</div>
+
+---
+
+<div align="center">
+
+**Part of the n8n Automation Agents collection.**
+
+⭐ Explore the repository for more automation workflows.
+
+</div>
