@@ -1,0 +1,292 @@
+{
+  "name": "Booking: Confirm and Calendar",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-booking",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "b2000000-0000-4000-8000-000000000001",
+      "name": "New Booking Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "new-booking-webhook"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const body = $input.first().json.body || $input.first().json;\nconst clean = v => (v === undefined || v === null) ? '' : String(v).trim();\nconst name = clean(body.name);\nconst email = clean(body.email).toLowerCase();\nconst phone = clean(body.phone);\nconst service = clean(body.service) || 'Appointment';\nconst date = clean(body.date);\nconst time = clean(body.time);\nconst notes = clean(body.notes);\nconst duration = Math.min(Math.max(parseInt(body.duration, 10) || 60, 15), 480);\n\nconst errors = [];\nif (clean(body.website)) errors.push('Spam check failed.');\nif (!name) errors.push('Name is required.');\nif (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) errors.push('A valid email is required.');\nif (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)) errors.push('A valid date is required.');\nif (!/^\\d{2}:\\d{2}$/.test(time)) errors.push('A valid time is required.');\n\n// Business time zone: Asia/Karachi (UTC+5, no daylight saving)\nconst OFFSET = 5 * 3600 * 1000;\nconst toLocal = ms => new Date(ms + OFFSET).toISOString().slice(0, 19);\n\nlet startMs = NaN;\nif (errors.length === 0) {\n  startMs = Date.parse(`${date}T${time}:00+05:00`);\n  if (isNaN(startMs)) errors.push('Date or time is not valid.');\n  else if (startMs <= Date.now()) errors.push('Please choose a time in the future.');\n}\nif (errors.length) return [{ json: { valid: false, errors } }];\n\nconst endMs = startMs + duration * 60000;\nconst startDisplay = new Date(startMs).toLocaleString('en-GB', {\n  timeZone: 'Asia/Karachi', weekday: 'short', day: 'numeric', month: 'short',\n  year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true\n});\n\nreturn [{ json: {\n  valid: true, errors: [],\n  bookingId: 'BK-' + Date.now().toString(36).toUpperCase(),\n  createdAt: new Date().toISOString(),\n  name, email, phone, service, notes, duration,\n  startLocal: toLocal(startMs).replace('T', ' ').slice(0, 16),\n  startISO: toLocal(startMs) + '+05:00',\n  endISO: toLocal(endMs) + '+05:00',\n  startDisplay\n} }];"
+      },
+      "id": "b2000000-0000-4000-8000-000000000002",
+      "name": "Validate and Prepare",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "valid-check",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b2000000-0000-4000-8000-000000000003",
+      "name": "Is Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "event",
+        "operation": "create",
+        "calendar": {
+          "__rl": true,
+          "mode": "id",
+          "value": "primary"
+        },
+        "start": "={{ $json.startISO }}",
+        "end": "={{ $json.endISO }}",
+        "additionalFields": {
+          "summary": "={{ $json.service }} - {{ $json.name }}",
+          "description": "={{ 'Booking ID: ' + $json.bookingId + '\\nPhone: ' + $json.phone + '\\nEmail: ' + $json.email + '\\nNotes: ' + $json.notes }}",
+          "attendees": [
+            "={{ $json.email }}"
+          ],
+          "sendUpdates": "all"
+        }
+      },
+      "id": "b2000000-0000-4000-8000-000000000004",
+      "name": "Create Calendar Event",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        740,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1vviJJAGcBbqDG9x_9sBreBENEn-4fjJfdsAT1N2kHEQ"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Bookings"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Booking ID": "={{ $('Validate and Prepare').item.json.bookingId }}",
+            "Created At": "={{ $('Validate and Prepare').item.json.createdAt }}",
+            "Name": "={{ $('Validate and Prepare').item.json.name }}",
+            "Email": "={{ $('Validate and Prepare').item.json.email }}",
+            "Phone": "={{ $('Validate and Prepare').item.json.phone }}",
+            "Service": "={{ $('Validate and Prepare').item.json.service }}",
+            "Start": "={{ $('Validate and Prepare').item.json.startLocal }}",
+            "Status": "Confirmed",
+            "Reminder 24h": "",
+            "Reminder 2h": "",
+            "Calendar Event ID": "={{ $json.id }}",
+            "Notes": "={{ $('Validate and Prepare').item.json.notes }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "b2000000-0000-4000-8000-000000000005",
+      "name": "Save to Bookings Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        980,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Validate and Prepare').item.json.email }}",
+        "subject": "={{ 'Booking confirmed: ' + $('Validate and Prepare').item.json.service + ' on ' + $('Validate and Prepare').item.json.startDisplay }}",
+        "message": "={{ '<p>Hi ' + $('Validate and Prepare').item.json.name + ',</p><p>Your booking is confirmed.</p><ul><li><b>Service:</b> ' + $('Validate and Prepare').item.json.service + '</li><li><b>When:</b> ' + $('Validate and Prepare').item.json.startDisplay + '</li><li><b>Booking ID:</b> ' + $('Validate and Prepare').item.json.bookingId + '</li></ul><p>You will also get a calendar invite and reminders before your appointment. To cancel or reschedule, just reply to this email.</p><p>Best regards,<br>YOUR BUSINESS NAME</p>' }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "b2000000-0000-4000-8000-000000000006",
+      "name": "Send Confirmation Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1220,
+        200
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, bookingId: $('Validate and Prepare').item.json.bookingId, when: $('Validate and Prepare').item.json.startDisplay } }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "b2000000-0000-4000-8000-000000000007",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1460,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, errors: $json.errors } }}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "b2000000-0000-4000-8000-000000000008",
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        740,
+        440
+      ]
+    }
+  ],
+  "connections": {
+    "New Booking Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate and Prepare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate and Prepare": {
+      "main": [
+        [
+          {
+            "node": "Is Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Valid?": {
+      "main": [
+        [
+          {
+            "node": "Create Calendar Event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Calendar Event": {
+      "main": [
+        [
+          {
+            "node": "Save to Bookings Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Bookings Sheet": {
+      "main": [
+        [
+          {
+            "node": "Send Confirmation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Confirmation Email": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

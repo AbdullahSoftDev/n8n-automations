@@ -1,0 +1,24 @@
+# n8n / local environment
+.n8n/
+*.log
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Node / frontend artifacts
+node_modules/
+dist/
+build/
+
+# Local test artifacts
+*.local
