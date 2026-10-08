@@ -38,6 +38,7 @@ This repository will grow over time as new automation agents are designed, teste
 |---|---|---|
 | 🎯 [Lead Capture, Scoring & Follow-up](./Lead%20Capture,%20Scoring%20and%20Follow-up/) | Capture leads, score them, log them, alert sales, and automatically respond | 🟢 Working |
 | 📅 [Booking Confirmation & Automated Reminders](./Booking%20and%20Reminder%20Automation/) | Accept bookings, validate appointment details, create calendar events, save booking records, send confirmations, and automate appointment reminders | 🟢 Working |
+| 🎵 [Daily URL Dispatcher](./Daily%20URL%20Dispatcher/) | Pick the next YouTube URL from a Google Sheet every day, convert it to MP3, generate an AI cover image, upload both files to Google Drive, email a "files ready" message, and mark the row as sent | 🟢 Working |
 | 🔜 More agents | New business and AI automation workflows | 🚧 Building |
 
 > **This repository is intentionally designed as a growing automation library.** New agents will be added as separate, self-contained projects.
@@ -83,6 +84,15 @@ n8n-automations/
 │   │   ├── setup.md
 │   │   └── architecture.md
 │   ├── .gitignore
+│   └── README.md
+│
+├── Daily URL Dispatcher/
+│   ├── workflow/
+│   │   └── daily-url-dispatcher.json
+│   ├── demo/
+│   │   ├── sample-data.csv
+│   │   └── README.md
+│   ├── docs/
 │   └── README.md
 │
 ├── Future Automation Agent/
