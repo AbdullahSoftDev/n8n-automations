@@ -1,4 +1,3 @@
-# 📅 Booking Confirmation & Automated Reminders
 
 <div align="center">
 
