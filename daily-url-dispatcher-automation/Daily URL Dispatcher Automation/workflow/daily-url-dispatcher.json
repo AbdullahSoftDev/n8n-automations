@@ -1,0 +1,477 @@
+{
+  "name": "Daily URL Dispatcher (Gmail) v4 Drive",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "c91316b6-6111-497f-be40-dd36c6b25d70",
+      "name": "Every Day at 9 AM",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "id": "540b0085-0da0-437a-bdcd-ae14f4ac9b35",
+      "name": "Get All Rows",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        300
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keep only rows where Status is empty, then take the first one\nconst rows = $input.all().filter(item => {\n  const status = String(item.json.Status || '').trim().toLowerCase();\n  const url = String(item.json.URL || '').trim();\n  return url !== '' && (status === '' || status === 'empty');\n});\n\nif (rows.length === 0) {\n  return [];\n}\n\nreturn [rows[0]];"
+      },
+      "id": "96082801-58a0-4f3a-8301-24e38bb122a0",
+      "name": "Pick Unsent URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=timeout 900 yt-dlp --no-progress --socket-timeout 30 --js-runtimes node --remote-components ejs:github -x --audio-format mp3 --audio-quality 0 --no-playlist --force-overwrites -o \"/home/node/.n8n-files/song.%(ext)s\" \"{{ $('Pick Unsent URL').item.json.URL }}\""
+      },
+      "id": "a1b2c3d4-6666-4a66-8a66-000000000006",
+      "name": "YouTube to MP3 (yt-dlp)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        700,
+        450
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n-files/song.mp3",
+        "options": {
+          "dataPropertyName": "audio"
+        }
+      },
+      "id": "a1b2c3d4-7777-4a77-8a77-000000000007",
+      "name": "Read MP3 File",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        924,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Name the attachment after the song title\nconst title = $('Pick Unsent URL').first().json.Title || 'song';\nconst safe = String(title).replace(/[\\\\/:*?\"<>|]/g, '').trim() || 'song';\n\nconst items = $input.all();\nfor (const item of items) {\n  item.binary.audio.fileName = safe + '.mp3';\n  item.binary.audio.mimeType = 'audio/mpeg';\n}\nreturn items;"
+      },
+      "id": "a1b2c3d4-8888-4a88-8a88-000000000008",
+      "name": "Name MP3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1148,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "a1b2c3d4-9999-4a99-8a99-000000000009",
+      "name": "Wait for Both Uploads",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1596,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "YOUR_EMAIL@example.com",
+        "subject": "=✅ Files ready: {{ $('Pick Unsent URL').item.json.Title }}",
+        "emailType": "text",
+        "message": "=Hi,\n\nYour files are ready in Google Drive.\n\nSong: {{ $('Pick Unsent URL').item.json.Title }}\nYouTube: {{ $('Pick Unsent URL').item.json.URL }}\n\nMP3: https://drive.google.com/file/d/{{ $('Upload MP3 to Drive').item.json.id }}/view\nCover image: https://drive.google.com/file/d/{{ $('Upload Cover to Drive').item.json.id }}/view\n\n— Your n8n automation",
+        "options": {}
+      },
+      "id": "0b7f8eb6-b039-460f-8c71-b34065932050",
+      "name": "Send Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1820,
+        300
+      ],
+      "webhookId": "656506d9-b73c-4044-bf97-840eeb56db97",
+      "executeOnce": true,
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Data",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Pick Unsent URL').item.json.row_number }}",
+            "Status": "Sent"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "0392ef3a-ef28-49d1-ac28-e42c0847cb72",
+      "name": "Mark as Sent",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2044,
+        300
+      ],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/ai/run/@cf/black-forest-labs/flux-2-klein-4b",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_CLOUDFLARE_API_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ 'Album cover art for the song ' + $('Pick Unsent URL').item.json.Title + '. Artistic, cinematic, vibrant colors, no text or letters.' }}"
+            },
+            {
+              "name": "width",
+              "value": "1024"
+            },
+            {
+              "name": "height",
+              "value": "1024"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c1c2c3c4-1111-4a11-8a11-000000000101",
+      "name": "Generate Image (Cloudflare)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        700,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turn Cloudflare's base64 image into an n8n binary file called 'image'\nconst out = [];\nfor (const item of $input.all()) {\n  let b64 = (item.json && item.json.result && item.json.result.image) || (item.json && item.json.image);\n  if (b64) {\n    b64 = b64.replace(/^data:image\\/\\w+;base64,/, '');\n    const buf = Buffer.from(b64, 'base64');\n    const isPng = buf[0] === 0x89 && buf[1] === 0x50;\n    const bin = await this.helpers.prepareBinaryData(\n      buf,\n      isPng ? 'cover.png' : 'cover.jpg',\n      isPng ? 'image/png' : 'image/jpeg'\n    );\n    out.push({ json: {}, binary: { image: bin } });\n  } else if (item.binary && item.binary.data) {\n    out.push({ json: {}, binary: { image: item.binary.data } });\n  } else {\n    throw new Error('No image in Cloudflare response: ' + JSON.stringify(item.json).slice(0, 300));\n  }\n}\nreturn out;"
+      },
+      "id": "c1c2c3c4-2222-4a22-8a22-000000000102",
+      "name": "Image to Binary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        924,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "image",
+        "name": "={{ $('Pick Unsent URL').item.json.Title }} - cover.jpg",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "id": "d1d2d3d4-1111-4a11-8a11-000000000201",
+      "name": "Upload Cover to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1148,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "audio",
+        "name": "={{ $binary.audio.fileName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "id": "d1d2d3d4-2222-4a22-8a22-000000000202",
+      "name": "Upload MP3 to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1372,
+        450
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Every Day at 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Get All Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Rows": {
+      "main": [
+        [
+          {
+            "node": "Pick Unsent URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Unsent URL": {
+      "main": [
+        [
+          {
+            "node": "Generate Image (Cloudflare)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "YouTube to MP3 (yt-dlp)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube to MP3 (yt-dlp)": {
+      "main": [
+        [
+          {
+            "node": "Read MP3 File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read MP3 File": {
+      "main": [
+        [
+          {
+            "node": "Name MP3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Name MP3": {
+      "main": [
+        [
+          {
+            "node": "Upload MP3 to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Gmail": {
+      "main": [
+        [
+          {
+            "node": "Mark as Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Image (Cloudflare)": {
+      "main": [
+        [
+          {
+            "node": "Image to Binary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image to Binary": {
+      "main": [
+        [
+          {
+            "node": "Upload Cover to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Cover to Drive": {
+      "main": [
+        [
+          {
+            "node": "Wait for Both Uploads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload MP3 to Drive": {
+      "main": [
+        [
+          {
+            "node": "Wait for Both Uploads",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait for Both Uploads": {
+      "main": [
+        [
+          {
+            "node": "Send Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "executionTimeout": 1800
+  },
+  "tags": []
+}
