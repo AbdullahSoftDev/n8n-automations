@@ -37,6 +37,7 @@ This repository will grow over time as new automation agents are designed, teste
 | Agent | Purpose | Status |
 |---|---|---|
 | 🎯 [Lead Capture, Scoring & Follow-up](./Lead%20Capture,%20Scoring%20and%20Follow-up/) | Capture leads, score them, log them, alert sales, and automatically respond | 🟢 Working |
+| 📅 [Booking Confirmation & Automated Reminders](./Booking%20and%20Reminder%20Automation/) | Accept bookings, validate appointment details, create calendar events, save booking records, send confirmations, and automate appointment reminders | 🟢 Working |
 | 🔜 More agents | New business and AI automation workflows | 🚧 Building |
 
 > **This repository is intentionally designed as a growing automation library.** New agents will be added as separate, self-contained projects.
@@ -53,7 +54,7 @@ Automation projects may cover areas such as:
 - 🗂️ **CRM Automation**
 - 🔔 **Notifications & Alerts**
 - 🌐 **Webhook-based Integrations**
-- 📅 **Scheduling & Follow-up**
+- 📅 **Scheduling, Booking & Follow-up**
 - 🔄 **Business Process Automation**
 - 🔗 **API & SaaS Integrations**
 
@@ -72,6 +73,18 @@ n8n-automations/
 │   ├── docs/
 │   └── README.md
 │
+├── Booking and Reminder Automation/
+│   ├── workflow/
+│   │   ├── booking-confirmation-calendar.json
+│   │   └── booking-reminders.json
+│   ├── demo/
+│   │   └── booking-form.html
+│   ├── docs/
+│   │   ├── setup.md
+│   │   └── architecture.md
+│   ├── .gitignore
+│   └── README.md
+│
 ├── Future Automation Agent/
 │   ├── workflow/
 │   ├── demo/
@@ -87,7 +100,7 @@ Every agent is intended to be **portable and understandable on its own**, while 
 
 <div align="center">
 
-**n8n · Webhooks · REST APIs · JavaScript · Google Workspace · Slack · Email · AI Services · Databases · SaaS Integrations**
+**n8n · Webhooks · REST APIs · JavaScript · Google Workspace · Google Calendar · Slack · Email · AI Services · Databases · SaaS Integrations**
 
 </div>
 
@@ -163,6 +176,9 @@ This repository will evolve into a broader collection of reusable automation age
 
 Planned areas include:
 
+- [x] Lead capture, scoring and follow-up
+- [x] Booking confirmation and calendar automation
+- [x] Automated appointment reminders
 - [ ] AI-powered lead qualification
 - [ ] CRM synchronization agents
 - [ ] WhatsApp follow-up automation
@@ -170,7 +186,6 @@ Planned areas include:
 - [ ] AI customer-support workflows
 - [ ] Automated reporting agents
 - [ ] Document-processing workflows
-- [ ] Appointment and scheduling automation
 - [ ] Multi-agent AI workflows
 - [ ] Error monitoring and recovery workflows
 
