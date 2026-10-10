@@ -1,9 +1,10 @@
-# N8N Lead Capture, Scoring & Follow-up
+<div align="center">
 
-<div align="center>
-#Lead Capture, Scoring & Follow-up
+# 🎯 n8n Lead Capture, Lead Scoring & Automated Follow-up
 
-### Turn incoming website inquiries into scored, prioritized, and automatically followed-up leads.
+### Automate website lead capture, rule-based lead scoring, Google Sheets CRM logging, Slack sales alerts, and Gmail follow-up with n8n.
+
+**Keywords:** n8n lead generation workflow, lead qualification automation, lead scoring workflow, website form webhook, Google Sheets CRM automation, Slack sales notifications, and automated email follow-up.
 
 <p>
   <img src="https://img.shields.io/badge/n8n-Automation-EA4B71?logo=n8n&logoColor=white" alt="n8n">
