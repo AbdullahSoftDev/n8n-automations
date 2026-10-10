@@ -1,9 +1,11 @@
 
 <div align="center">
 
-# Booking Confirmation & Automated Reminders
+# 📅 n8n Booking Automation: Calendar Confirmation & Appointment Reminders
 
-### Turn a website booking request into a confirmed calendar event, a centralized booking record, an instant confirmation, and timed reminder emails.
+### Automate website appointment bookings with webhook validation, Google Calendar event creation, Google Sheets booking records, Gmail confirmations, and scheduled 24-hour and 2-hour reminders.
+
+**Keywords:** n8n booking workflow, appointment scheduling automation, Google Calendar integration, booking confirmation email, automated appointment reminders, Google Sheets booking system, and Gmail workflow automation.
 
 <p>
   <img src="https://img.shields.io/badge/n8n-Automation-EA4B71?logo=n8n&logoColor=white" alt="n8n">
