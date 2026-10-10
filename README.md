@@ -37,9 +37,10 @@ Whether you're exploring n8n workflow examples, learning workflow automation, or
 
 | Agent | What It Does | Status |
 |---|---|---|
-| 🎯 [Lead Capture, Scoring & Follow-up](./Lead%20Capture,%20Scoring%20and%20Follow-up/) | Captures website inquiries, scores and prioritizes leads, logs them in Google Sheets, alerts sales through Slack, and sends automated email responses. | 🟢 Available |
-| 📅 [Booking Confirmation & Automated Reminders](./Booking%20and%20Reminder%20Automation/) | Validates booking requests, creates Google Calendar events, records bookings, sends confirmation emails, and automates appointment reminders. | 🟢 Available |
-| 🎵 [Daily URL Dispatcher](./Daily%20URL%20Dispatcher/) | Selects the next URL from Google Sheets, processes media, uploads output files to Google Drive, sends an email notification, and updates the row status. | 🟢 Available |
+| 🎯 [Lead Capture, Scoring & Follow-up](./Lead%20Capture,%20Scoring%20and%20Follow-up/) | Captures website inquiries, calculates a rule-based lead score, logs prospects in Google Sheets, sends Slack sales alerts, and emails automated responses. | 🟢 Available |
+| 🧠 [AI Lead Qualification & Smart Follow-up](./AI%20Lead%20Qualification/) | Demonstrates an n8n lead qualification starter with baseline scoring, website intake, and documented AI enrichment and sales follow-up integration points. | 🟢 Starter workflow |
+| 📅 [Booking Confirmation & Automated Reminders](./Booking%20and%20Reminder%20Automation/) | Validates appointment requests, creates Google Calendar events, stores booking records, sends confirmations, and automates 24-hour and 2-hour reminder emails. | 🟢 Available |
+| 🎵 [Daily URL Dispatcher Automation](./Daily%20URL%20Dispatcher%20Automation/) | Selects the next unprocessed URL from Google Sheets, creates an MP3, generates AI cover art, uploads files to Google Drive, and emails the results. | 🟢 Available |
 | 🔜 More Automation Agents | New workflow templates and business automation use cases will be added over time. | 🚧 In progress |
 
 **Explore a workflow:** Open its folder to find the detailed README, importable workflow JSON, demo files, and supporting documentation where available.
@@ -83,7 +84,7 @@ n8n-automations/
 │   ├── docs/
 │   └── README.md
 │
-├── Daily URL Dispatcher/
+├── AI Lead Qualification/\n│   ├── workflow/\n│   ├── demo/\n│   ├── docs/\n│   └── README.md\n│\n├── Daily URL Dispatcher Automation/
 │   ├── workflow/
 │   │   └── daily-url-dispatcher.json
 │   ├── demo/
