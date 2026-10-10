@@ -1,0 +1,172 @@
+{
+  "name": "AI Lead Qualification \u2014 Starter",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-lead-ai",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "c2a4f310-7e7f-4df3-a111-9cbd09d1c101",
+      "name": "New Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        0
+      ],
+      "webhookId": "d8af8b12-49bb-4a2f-b55d-40a9d5a2e501"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json.body ?? $input.first().json;\nconst clean = (v, max = 2000) => String(v ?? '').trim().slice(0, max);\nconst name = clean(input.name, 120);\nconst email = clean(input.email, 254).toLowerCase();\nconst company = clean(input.company, 160);\nconst message = clean(input.message, 4000);\nconst errors = [];\nif (!name) errors.push('Name is required.');\nif (!/^[^\\\\s@]+@[^\\\\s@]+\\\\.[^\\\\s@]+$/.test(email)) errors.push('A valid email is required.');\nif (!message) errors.push('Message is required.');\nif (errors.length) return [{json:{success:false,statusCode:400,errors}}];\nconst text = message.toLowerCase();\nconst spamSignals = ['buy cheap','ignore all previous instructions','90% off','click here to win'];\nconst supportSignals = ['login is not working','cannot log in','can\\'t log in','account access','already bought','already purchased','password reset','support'];\nconst questionSignals = ['opening hours','weekend hours','what are your hours','where are you located','how does it work'];\nconst buyingSignals = ['pricing','price','quote','budget','demo','demonstration','subscription','contract','purchase','buy','licenses','licences'];\nlet intent = 'other';\nif (spamSignals.some(s => text.includes(s))) intent = 'spam';\nelse if (supportSignals.some(s => text.includes(s))) intent = 'support';\nelse if (buyingSignals.some(s => text.includes(s))) intent = 'buying';\nelse if (questionSignals.some(s => text.includes(s)) || text.trim().endsWith('?')) intent = 'question';\nlet ruleScore = 0;\nif (company) ruleScore += 20;\nif (/@(gmail|yahoo|outlook|hotmail)\\\\./i.test(email) === false) ruleScore += 15;\nif (message.length > 80) ruleScore += 15;\nconst keywordCount = buyingSignals.filter(s => text.includes(s)).length;\nruleScore += Math.min(keywordCount * 10, 40);\nruleScore = Math.min(ruleScore, 100);\nconst caps = {buying:100,question:45,support:30,other:40,spam:10};\nconst baselineAI = intent === 'buying' ? 75 : intent === 'question' ? 20 : intent === 'support' ? 15 : intent === 'spam' ? 0 : 30;\nconst aiScore = Math.min(baselineAI, caps[intent] ?? 40);\nconst finalScore = Math.round(aiScore * 0.7 + ruleScore * 0.3);\nconst category = intent === 'spam' ? 'spam' : (intent === 'buying' && finalScore >= 65 ? 'hot' : 'nurture');\nreturn [{json:{success:true,receivedAt:new Date().toISOString(),name,email,company,message,intent,urgency:intent==='buying'?'medium':'low',ruleScore,aiScore,finalScore,category,aiStatus:'baseline_only',summary:'Starter workflow baseline classification; connect an AI node for model-generated analysis.',suggestedReply:'Thank you for reaching out. Our team will review your message and follow up as appropriate.',errors:[]}}];"
+      },
+      "id": "c2a4f310-7e7f-4df3-a111-9cbd09d1c102",
+      "name": "Validate and Score Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8d3f78e5-98f7-4f93-9db1-7e28c65f20c1",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c2a4f310-7e7f-4df3-a111-9cbd09d1c103",
+      "name": "Is Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -100,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "c2a4f310-7e7f-4df3-a111-9cbd09d1c104",
+      "name": "Respond with Lead",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        180,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "c2a4f310-7e7f-4df3-a111-9cbd09d1c105",
+      "name": "Respond with Validation Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        180,
+        100
+      ]
+    }
+  ],
+  "connections": {
+    "New Lead Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate and Score Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate and Score Lead": {
+      "main": [
+        [
+          {
+            "node": "Is Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Valid?": {
+      "main": [
+        [
+          {
+            "node": "Respond with Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond with Validation Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ef2ac7a0-0bd8-4c64-9022-50d89b47e101",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}
