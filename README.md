@@ -1,119 +1,192 @@
 <div align="center">
 
-# n8n Automations
+# ⚡ N8N Automations
 
-### Reusable n8n workflows for lead generation, booking reminders, and business process automation.
+### A growing collection of production-minded automation agents built with n8n.
 
-Build practical automations that connect web forms, APIs, Google Workspace, Slack, email, and AI services.
+**Discover reusable n8n workflows for lead capture, lead scoring, booking confirmations, appointment reminders, and business process automation.**
 
 <p>
-  <a href="https://github.com/AbdullahSoftDev/n8n-automations"><img src="https://img.shields.io/badge/n8n-Workflow%20Automation-EA4B71?logo=n8n&logoColor=white" alt="n8n workflow automation"></a>
-  <img src="https://img.shields.io/badge/Reusable-Workflows-2563EB" alt="Reusable workflows">
-  <img src="https://img.shields.io/badge/Focus-Business%20Automation-0F766E" alt="Business automation">
+  <img src="https://img.shields.io/badge/n8n-Automation-EA4B71?logo=n8n&logoColor=white" alt="n8n workflow automation">
+  <img src="https://img.shields.io/badge/Workflow%20Automation-Active-5E5CE6" alt="Workflow automation">
+  <img src="https://img.shields.io/badge/AI%20%26%20Integrations-Building-00A67E" alt="AI and integrations">
+  <img src="https://img.shields.io/badge/Reusable-Workflow%20Templates-2563EB" alt="Reusable workflow templates">
 </p>
 
 <p>
-  <a href="#available-workflows">Explore Workflows</a> ·
-  <a href="#quick-start">Quick Start</a> ·
-  <a href="#contributing">Contribute</a>
+  <a href="https://github.com/AbdullahSoftDev/n8n-automations">📂 Repository</a> ·
+  <a href="https://n8n.io/">⚙️ n8n Platform</a> ·
+  <a href="https://github.com/AbdullahSoftDev">👨‍💻 GitHub Profile</a>
 </p>
 
 </div>
 
 ---
 
-## About This Repository
+## ⚡ About This Repository
 
-**n8n Automations** is a growing library of practical, reusable [n8n](https://n8n.io/) workflows for automating everyday business processes. The projects demonstrate workflow automation patterns for capturing and qualifying leads, managing appointment bookings, sending reminders, moving files, and connecting common SaaS tools.
+**N8N Automations** is my central collection of practical **n8n workflow automations, reusable workflow templates, and business process automation projects**. Each project connects tools and services to reduce repetitive work, improve response times, and make everyday processes easier to manage.
 
-Each automation is organized as a separate project with its workflow JSON, documentation, demo assets, and setup instructions where available. The goal is to make each workflow easier to understand, import, configure, test, and adapt.
+The workflows explore integrations across **websites, webhooks, APIs, Google Sheets, Google Calendar, Gmail, Slack, Google Drive, and AI services**. Every automation is organized as a separate project with workflow files, documentation, demos, and setup guidance where available.
 
-**Keywords:** n8n automation, n8n workflows, workflow templates, business process automation, lead capture automation, lead scoring, booking reminders, Google Sheets automation, Google Calendar integration, Slack notifications.
+> **Build automation once. Let the workflow handle the repetitive work.**
 
-## Available Workflows
+Whether you're exploring n8n workflow examples, learning workflow automation, or adapting an automation for a real use case, this repository is designed to be a growing, practical resource.
 
-| Workflow | What it does | Links |
+## 🤖 Automation Agents
+
+| Agent | What It Does | Status |
 |---|---|---|
-| **Lead Capture, Scoring & Follow-up** | Captures website inquiries, calculates a transparent lead score, logs leads in Google Sheets, alerts sales through Slack, and sends an email response. | [README](./Lead%20Capture,%20Scoring%20and%20Follow-up/) · [Workflow files](./Lead%20Capture,%20Scoring%20and%20Follow-up/workflow/) · [Demo](./Lead%20Capture,%20Scoring%20and%20Follow-up/demo/) |
-| **Booking Confirmation & Automated Reminders** | Validates booking submissions, creates Google Calendar events, stores booking records, emails confirmations, and sends scheduled reminders. | [README](./Booking%20and%20Reminder%20Automation/) · [Workflow files](./Booking%20and%20Reminder%20Automation/workflow/) · [Demo](./Booking%20and%20Reminder%20Automation/demo/) |
-| **Daily URL Dispatcher** | Reads the next URL from a Google Sheet, processes media files, uploads outputs to Google Drive, sends a notification email, and updates the row status. | [README](./Daily%20URL%20Dispatcher/) |
+| 🎯 [Lead Capture, Scoring & Follow-up](./Lead%20Capture,%20Scoring%20and%20Follow-up/) | Captures website inquiries, scores and prioritizes leads, logs them in Google Sheets, alerts sales through Slack, and sends automated email responses. | 🟢 Available |
+| 📅 [Booking Confirmation & Automated Reminders](./Booking%20and%20Reminder%20Automation/) | Validates booking requests, creates Google Calendar events, records bookings, sends confirmation emails, and automates appointment reminders. | 🟢 Available |
+| 🎵 [Daily URL Dispatcher](./Daily%20URL%20Dispatcher/) | Selects the next URL from Google Sheets, processes media, uploads output files to Google Drive, sends an email notification, and updates the row status. | 🟢 Available |
+| 🔜 More Automation Agents | New workflow templates and business automation use cases will be added over time. | 🚧 In progress |
 
-## Why Use These n8n Workflows?
+**Explore a workflow:** Open its folder to find the detailed README, importable workflow JSON, demo files, and supporting documentation where available.
 
-- **Practical use cases:** workflows are built around repeatable tasks and business processes.
-- **Readable structure:** separate folders make workflow files and documentation easier to find.
-- **Adaptable integrations:** configure supported services and credentials for your own environment.
-- **Documented setup:** each workflow's README explains its purpose, required services, and configuration.
-- **Learning by example:** explore triggers, conditional routing, data transformation, API integrations, and scheduled automation.
+## ✨ What You'll Find Here
 
-## Quick Start
+This n8n automation library focuses on useful, adaptable workflow examples such as:
 
-1. Open the workflow directory you want to try.
-2. Read that workflow's README and setup documentation.
-3. Download or open the relevant JSON file in the `workflow/` directory.
-4. In your n8n instance, choose **Import from File** and select the workflow JSON.
-5. Configure the required credentials, IDs, URLs, and environment-specific values.
-6. Test with sample data before activating the workflow.
+- 🎯 **Lead Generation & Lead Scoring Automation** — capture inquiries, qualify prospects, and prioritize follow-up.
+- 📅 **Booking & Appointment Reminder Automation** — coordinate booking records, calendar events, confirmations, and reminders.
+- 📧 **Email Workflow Automation** — trigger notifications and responses based on workflow events.
+- 📊 **Google Sheets Automation** — log, retrieve, and update structured business data.
+- 🔔 **Slack Notifications & Alerts** — notify teams when important workflow conditions are met.
+- 🌐 **Webhook & REST API Integrations** — connect websites and external applications to n8n workflows.
+- 🤖 **AI Agents & AI-powered Workflows** — a growing area for intelligent, tool-connected automation.
+- 🔄 **Business Process Automation** — connect repeatable tasks into documented, reusable workflows.
 
-Requirements vary by project. Workflows that use Google Sheets, Google Calendar, Gmail, or Slack require the corresponding accounts and n8n credentials. Importing a workflow does not automatically connect your accounts.
+The exact integrations and requirements vary by workflow. Check each project's README before importing or configuring it.
 
-## Repository Structure
+## 🏗️ Repository Structure
+
+Each automation has its own folder to keep workflow files, demos, and documentation easy to find.
 
 ```text
 n8n-automations/
+│
 ├── Lead Capture, Scoring and Follow-up/
 │   ├── workflow/
+│   │   └── lead-capture-workflow.json
 │   ├── demo/
+│   │   └── contact-form.html
 │   ├── docs/
 │   └── README.md
+│
 ├── Booking and Reminder Automation/
 │   ├── workflow/
+│   │   ├── booking-confirmation-calendar.json
+│   │   └── booking-reminders.json
 │   ├── demo/
+│   │   └── booking-form.html
 │   ├── docs/
 │   └── README.md
+│
 ├── Daily URL Dispatcher/
 │   ├── workflow/
+│   │   └── daily-url-dispatcher.json
 │   ├── demo/
 │   ├── docs/
 │   └── README.md
+│
 └── README.md
 ```
 
-## Technology and Integrations
+## 🚀 Quick Start
 
-The collection uses **n8n**, webhooks, REST APIs, JavaScript, and integrations with tools such as Google Sheets, Google Calendar, Gmail, Slack, and Google Drive. The exact requirements depend on the individual workflow; consult its documentation before importing.
+1. **Choose an automation** from the table above.
+2. **Read its README** and review the required integrations and setup steps.
+3. **Import the workflow** by opening your n8n instance and selecting the workflow JSON file from the project's `workflow/` directory.
+4. **Configure credentials** for the services used by that workflow.
+5. **Update environment-specific values**, such as spreadsheet IDs, calendar settings, Slack channels, and webhook URLs.
+6. **Test with sample data** before activating the workflow for real use.
 
-## Security Notes
+> **Note:** Importing a workflow does not connect your accounts automatically. Each integration needs its own credentials and configuration.
 
-- Never commit API keys, passwords, OAuth secrets, webhook secrets, or private credentials.
-- Use n8n's credential system for authentication.
-- Review imported nodes and expressions before running a workflow.
-- Add authentication, validation, rate limiting, and error handling before exposing webhooks to public or production traffic.
-- Test with non-sensitive sample data first.
+## 🛠️ Technology & Integrations
 
-These projects are reusable examples and starting points. Review and harden each workflow for your own environment before production use.
+<div align="center">
 
-## Roadmap
+**n8n · Webhooks · REST APIs · JavaScript · Google Sheets · Google Calendar · Gmail · Slack · Google Drive · AI Services**
 
-- [x] Lead capture, scoring, and follow-up
-- [x] Booking confirmation and calendar integration
+</div>
+
+n8n provides the workflow orchestration layer, while connected services handle tasks such as data storage, calendar scheduling, notifications, and file processing. The stack varies by automation; consult each workflow's documentation for its specific requirements.
+
+## 🧠 Design Philosophy
+
+### 01 — Practical
+Automate real, repeatable tasks instead of building workflows without a clear use case.
+
+### 02 — Modular
+Keep each automation in a separate folder so it can be understood, imported, configured, and extended independently.
+
+### 03 — Documented
+Explain the workflow's purpose, integrations, setup requirements, testing process, and known limitations.
+
+### 04 — Adaptable
+Provide a foundation that developers can customize for their own business processes and connected services.
+
+### 05 — Security-aware
+Treat credentials, webhook exposure, validation, and error handling as important parts of automation design.
+
+### 06 — Portfolio-ready
+Demonstrate workflow design, integration logic, data handling, documentation, and practical software problem-solving.
+
+## 🔐 Credentials & Security
+
+**Never commit API keys, passwords, OAuth secrets, webhook secrets, or private credentials to this repository.**
+
+Before running an imported workflow:
+
+- Configure credentials through n8n's credential system.
+- Review nodes and expressions for environment-specific values.
+- Protect public-facing webhooks with appropriate authentication and validation.
+- Test using non-sensitive sample data.
+- Consider rate limiting, error handling, and execution monitoring before production use.
+
+These workflows are reusable examples and starting points. Review and harden each project for your own environment before relying on it in production.
+
+## 📈 Roadmap
+
+- [x] Lead capture, scoring, and follow-up workflow
+- [x] Booking confirmation and calendar automation
 - [x] Automated appointment reminders
-- [x] Scheduled URL and file processing
+- [x] Scheduled URL and file-processing workflow
 - [ ] CRM synchronization workflows
 - [ ] WhatsApp follow-up automation
-- [ ] AI-assisted customer support
-- [ ] Reporting and monitoring workflows
-- [ ] Error recovery and alerting patterns
+- [ ] Email outreach automation
+- [ ] AI-assisted customer-support workflows
+- [ ] Automated reporting and monitoring
+- [ ] Error recovery and alerting workflows
+- [ ] More reusable n8n workflow templates
 
-## Contributing
+## 🤝 Contributing
 
-Suggestions, bug reports, and improvements are welcome. When proposing a new workflow, include its business use case, required integrations, setup instructions, sample inputs, expected outputs, and known limitations. Remove secrets and personal data before sharing workflow exports.
+Ideas, improvements, and bug reports are welcome. For a new automation, include the business problem, workflow JSON, required integrations, setup instructions, sample input, expected output, and known limitations.
 
-## Author
+Please remove credentials, secrets, and private data from exported workflows before sharing them.
 
-**Muhammad Abdullah** · Full-Stack Developer | AI Applications & Workflow Automation
+## 👨‍💻 Author
 
-- GitHub: [@AbdullahSoftDev](https://github.com/AbdullahSoftDev)
-- LinkedIn: [abdullahsoftdev](https://linkedin.com/in/abdullahsoftdev)
+<div align="center">
 
-If this workflow library helps you, consider starring the repository and checking back as more n8n automation examples are added.
+### Muhammad Abdullah
+
+**Full-Stack Developer · AI Applications · Workflow Automation**
+
+<a href="https://github.com/AbdullahSoftDev">GitHub</a> ·
+<a href="https://linkedin.com/in/abdullahsoftdev">LinkedIn</a>
+
+⭐ Explore the workflows, reuse what helps, and follow the repository as new n8n automation projects are added.
+
+</div>
+
+---
+
+<div align="center">
+
+**Built with n8n · Designed for automation · Continuously evolving**
+
+</div>
