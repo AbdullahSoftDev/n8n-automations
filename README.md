@@ -189,7 +189,7 @@ Planned areas include:
 - [x] Lead capture, scoring and follow-up
 - [x] Booking confirmation and calendar automation
 - [x] Automated appointment reminders
-- [ ] AI-powered lead qualification
+- [x] AI-powered lead qualification
 - [ ] CRM synchronization agents
 - [ ] WhatsApp follow-up automation
 - [ ] Email outreach agents
