@@ -2,7 +2,9 @@
 
 # 🧠 AI Lead Qualification & Smart Follow-up
 
-### Turn incoming website enquiries into scored, prioritized leads—with a clear path for AI enrichment, sales alerts, and automated replies.
+### Build an n8n lead qualification workflow for website enquiries, lead scoring, AI-assisted enrichment, Google Sheets tracking, Slack sales alerts, and automated Gmail follow-up.
+
+**Keywords:** n8n AI lead qualification, lead scoring automation, AI sales workflow, website lead capture, Google Sheets CRM, Slack sales notifications, and automated lead follow-up.
 
 <p>
   <img src="https://img.shields.io/badge/n8n-Automation-EA4B71?logo=n8n&logoColor=white" alt="n8n Automation">
