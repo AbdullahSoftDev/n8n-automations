@@ -2,7 +2,9 @@
 
 # 🎵 Daily URL Dispatcher — YouTube to MP3 + AI Cover + Google Drive + Gmail
 
-### A scheduled n8n automation that turns the next unsent URL in Google Sheets into an MP3, generates AI cover art, stores both files in Google Drive, and emails the results.
+### Automate scheduled URL-to-MP3 media processing with n8n, Google Sheets, yt-dlp, AI-generated cover art, Google Drive uploads, and Gmail delivery.
+
+**Keywords:** n8n media automation, YouTube to MP3 workflow, scheduled URL processing, Google Sheets automation, AI cover image generation, Google Drive file upload, and automated Gmail delivery.
 
 <p>
   <img src="https://img.shields.io/badge/n8n-Automation-EA4B71?logo=n8n&logoColor=white" alt="n8n">
