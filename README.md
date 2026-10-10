@@ -1,223 +1,119 @@
 <div align="center">
 
-# N8N Automations
+# n8n Automations
 
-### A growing collection of production-minded automation agents built with n8n.
+### Reusable n8n workflows for lead generation, booking reminders, and business process automation.
+
+Build practical automations that connect web forms, APIs, Google Workspace, Slack, email, and AI services.
 
 <p>
-  <img src="https://img.shields.io/badge/n8n-Automation-EA4B71?logo=n8n&logoColor=white" alt="n8n">
-  <img src="https://img.shields.io/badge/Workflow%20Automation-Active-5E5CE6" alt="Workflow Automation">
-  <img src="https://img.shields.io/badge/AI%20%26%20Integrations-Building-00A67E" alt="AI & Integrations">
+  <a href="https://github.com/AbdullahSoftDev/n8n-automations"><img src="https://img.shields.io/badge/n8n-Workflow%20Automation-EA4B71?logo=n8n&logoColor=white" alt="n8n workflow automation"></a>
+  <img src="https://img.shields.io/badge/Reusable-Workflows-2563EB" alt="Reusable workflows">
+  <img src="https://img.shields.io/badge/Focus-Business%20Automation-0F766E" alt="Business automation">
 </p>
 
 <p>
-  <a href="https://github.com/AbdullahSoftDev/n8n-automations">Repository</a> ·
-  <a href="https://n8n.io/">n8n</a> ·
-  <a href="https://github.com/AbdullahSoftDev">GitHub Profile</a>
+  <a href="#available-workflows">Explore Workflows</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#contributing">Contribute</a>
 </p>
 
 </div>
 
 ---
 
-## ⚡ About This Repository
+## About This Repository
 
-**n8n Automations** is my central repository for building, documenting, and continuously expanding a collection of practical automation agents.
+**n8n Automations** is a growing library of practical, reusable [n8n](https://n8n.io/) workflows for automating everyday business processes. The projects demonstrate workflow automation patterns for capturing and qualifying leads, managing appointment bookings, sending reminders, moving files, and connecting common SaaS tools.
 
-Each project focuses on turning repetitive business processes into reliable workflows that can connect **websites, APIs, databases, communication platforms, CRMs, spreadsheets, AI services, and internal tools**.
+Each automation is organized as a separate project with its workflow JSON, documentation, demo assets, and setup instructions where available. The goal is to make each workflow easier to understand, import, configure, test, and adapt.
 
-The goal is simple:
+**Keywords:** n8n automation, n8n workflows, workflow templates, business process automation, lead capture automation, lead scoring, booking reminders, Google Sheets automation, Google Calendar integration, Slack notifications.
 
-> **Build automation once. Let the workflow handle the repetitive work.**
+## Available Workflows
 
-This repository will grow over time as new automation agents are designed, tested, documented, and added.
-
-## 🤖 Automation Agents
-
-| Agent | Purpose | Status |
+| Workflow | What it does | Links |
 |---|---|---|
-| 🎯 [Lead Capture, Scoring & Follow-up](./Lead%20Capture,%20Scoring%20and%20Follow-up/) | Capture leads, score them, log them, alert sales, and automatically respond | 🟢 Working |
-| 📅 [Booking Confirmation & Automated Reminders](./Booking%20and%20Reminder%20Automation/) | Accept bookings, validate appointment details, create calendar events, save booking records, send confirmations, and automate appointment reminders | 🟢 Working |
-| 🎵 [Daily URL Dispatcher](./Daily%20URL%20Dispatcher/) | Pick the next YouTube URL from a Google Sheet every day, convert it to MP3, generate an AI cover image, upload both files to Google Drive, email a "files ready" message, and mark the row as sent | 🟢 Working |
-| 🔜 More agents | New business and AI automation workflows | 🚧 Building |
+| **Lead Capture, Scoring & Follow-up** | Captures website inquiries, calculates a transparent lead score, logs leads in Google Sheets, alerts sales through Slack, and sends an email response. | [README](./Lead%20Capture,%20Scoring%20and%20Follow-up/) · [Workflow files](./Lead%20Capture,%20Scoring%20and%20Follow-up/workflow/) · [Demo](./Lead%20Capture,%20Scoring%20and%20Follow-up/demo/) |
+| **Booking Confirmation & Automated Reminders** | Validates booking submissions, creates Google Calendar events, stores booking records, emails confirmations, and sends scheduled reminders. | [README](./Booking%20and%20Reminder%20Automation/) · [Workflow files](./Booking%20and%20Reminder%20Automation/workflow/) · [Demo](./Booking%20and%20Reminder%20Automation/demo/) |
+| **Daily URL Dispatcher** | Reads the next URL from a Google Sheet, processes media files, uploads outputs to Google Drive, sends a notification email, and updates the row status. | [README](./Daily%20URL%20Dispatcher/) |
 
-> **This repository is intentionally designed as a growing automation library.** New agents will be added as separate, self-contained projects.
+## Why Use These n8n Workflows?
 
-## 🧩 What You'll Find Here
+- **Practical use cases:** workflows are built around repeatable tasks and business processes.
+- **Readable structure:** separate folders make workflow files and documentation easier to find.
+- **Adaptable integrations:** configure supported services and credentials for your own environment.
+- **Documented setup:** each workflow's README explains its purpose, required services, and configuration.
+- **Learning by example:** explore triggers, conditional routing, data transformation, API integrations, and scheduled automation.
 
-Automation projects may cover areas such as:
+## Quick Start
 
-- 🎯 **Lead Generation & Qualification**
-- 📧 **Email Automation**
-- 💬 **WhatsApp & Messaging Automation**
-- 🤖 **AI Agents & AI-powered workflows**
-- 📊 **Data Processing & Reporting**
-- 🗂️ **CRM Automation**
-- 🔔 **Notifications & Alerts**
-- 🌐 **Webhook-based Integrations**
-- 📅 **Scheduling, Booking & Follow-up**
-- 🔄 **Business Process Automation**
-- 🔗 **API & SaaS Integrations**
+1. Open the workflow directory you want to try.
+2. Read that workflow's README and setup documentation.
+3. Download or open the relevant JSON file in the `workflow/` directory.
+4. In your n8n instance, choose **Import from File** and select the workflow JSON.
+5. Configure the required credentials, IDs, URLs, and environment-specific values.
+6. Test with sample data before activating the workflow.
 
-Each automation is kept in its own directory with its workflow files, documentation, demos, and supporting assets where applicable.
+Requirements vary by project. Workflows that use Google Sheets, Google Calendar, Gmail, or Slack require the corresponding accounts and n8n credentials. Importing a workflow does not automatically connect your accounts.
 
-## 🏗️ Repository Structure
+## Repository Structure
 
 ```text
 n8n-automations/
-│
 ├── Lead Capture, Scoring and Follow-up/
 │   ├── workflow/
-│   │   └── lead-capture-workflow.json
 │   ├── demo/
-│   │   └── contact-form.html
 │   ├── docs/
 │   └── README.md
-│
 ├── Booking and Reminder Automation/
 │   ├── workflow/
-│   │   ├── booking-confirmation-calendar.json
-│   │   └── booking-reminders.json
 │   ├── demo/
-│   │   └── booking-form.html
 │   ├── docs/
-│   │   ├── setup.md
-│   │   └── architecture.md
-│   ├── .gitignore
 │   └── README.md
-│
 ├── Daily URL Dispatcher/
 │   ├── workflow/
-│   │   └── daily-url-dispatcher.json
-│   ├── demo/
-│   │   ├── sample-data.csv
-│   │   └── README.md
-│   ├── docs/
-│   └── README.md
-│
-├── Future Automation Agent/
-│   ├── workflow/
 │   ├── demo/
 │   ├── docs/
 │   └── README.md
-│
 └── README.md
 ```
 
-Every agent is intended to be **portable and understandable on its own**, while the root README provides a high-level view of the entire collection.
+## Technology and Integrations
 
-## 🛠️ Core Technology
+The collection uses **n8n**, webhooks, REST APIs, JavaScript, and integrations with tools such as Google Sheets, Google Calendar, Gmail, Slack, and Google Drive. The exact requirements depend on the individual workflow; consult its documentation before importing.
 
-<div align="center">
+## Security Notes
 
-**n8n · Webhooks · REST APIs · JavaScript · Google Workspace · Google Calendar · Slack · Email · AI Services · Databases · SaaS Integrations**
+- Never commit API keys, passwords, OAuth secrets, webhook secrets, or private credentials.
+- Use n8n's credential system for authentication.
+- Review imported nodes and expressions before running a workflow.
+- Add authentication, validation, rate limiting, and error handling before exposing webhooks to public or production traffic.
+- Test with non-sensitive sample data first.
 
-</div>
+These projects are reusable examples and starting points. Review and harden each workflow for your own environment before production use.
 
-The exact stack varies from automation to automation.
+## Roadmap
 
-## 🚀 Design Philosophy
-
-### 01 — Practical
-
-Automations are built around real operational problems rather than isolated demonstrations.
-
-### 02 — Modular
-
-Each workflow is designed as an independent agent that can be imported, configured, and extended.
-
-### 03 — Documented
-
-Every major automation includes setup instructions, workflow logic, required credentials, testing steps, and known limitations.
-
-### 04 — Extensible
-
-The workflows are designed to provide a foundation that can later be connected to CRMs, AI models, messaging channels, databases, and other services.
-
-### 05 — Portfolio Ready
-
-The repository demonstrates not only workflow building, but also integration design, business logic, error awareness, documentation, and deployment considerations.
-
-## 📌 Adding a New Automation
-
-New agents should follow a consistent structure:
-
-```text
-Automation Name/
-├── workflow/
-│   └── workflow.json
-├── demo/
-│   └── demo files
-├── docs/
-│   └── screenshots / assets
-└── README.md
-```
-
-The README for each agent should explain:
-
-- The business problem
-- What the automation does
-- Workflow architecture
-- Trigger and actions
-- Integrations
-- Business logic
-- Setup requirements
-- Credentials
-- Testing instructions
-- Known limitations
-- Possible improvements
-
-## 🔐 Credentials & Security
-
-**Never commit API keys, passwords, OAuth secrets, webhook secrets, or private credentials to this repository.**
-
-Use n8n's credential system and environment-specific configuration instead.
-
-Before publishing an exported workflow, verify that:
-
-- No secret values are embedded in nodes.
-- Personal credentials are removed.
-- Webhook endpoints do not expose sensitive information.
-- Production endpoints have appropriate authentication or protection.
-
-## 📈 Roadmap
-
-This repository will evolve into a broader collection of reusable automation agents.
-
-Planned areas include:
-
-- [x] Lead capture, scoring and follow-up
-- [x] Booking confirmation and calendar automation
+- [x] Lead capture, scoring, and follow-up
+- [x] Booking confirmation and calendar integration
 - [x] Automated appointment reminders
-- [x] AI-powered lead qualification
-- [ ] CRM synchronization agents
+- [x] Scheduled URL and file processing
+- [ ] CRM synchronization workflows
 - [ ] WhatsApp follow-up automation
-- [ ] Email outreach agents
-- [ ] AI customer-support workflows
-- [ ] Automated reporting agents
-- [ ] Document-processing workflows
-- [ ] Multi-agent AI workflows
-- [ ] Error monitoring and recovery workflows
+- [ ] AI-assisted customer support
+- [ ] Reporting and monitoring workflows
+- [ ] Error recovery and alerting patterns
 
-## 👨‍💻 Author
+## Contributing
 
-<div align="center">
+Suggestions, bug reports, and improvements are welcome. When proposing a new workflow, include its business use case, required integrations, setup instructions, sample inputs, expected outputs, and known limitations. Remove secrets and personal data before sharing workflow exports.
 
-### Muhammad Abdullah
+## Author
 
-Full-Stack Developer · AI Applications · Automation
+**Muhammad Abdullah** · Full-Stack Developer | AI Applications & Workflow Automation
 
-<a href="https://github.com/AbdullahSoftDev">GitHub</a> ·
-<a href="https://linkedin.com/in/abdullahsoftdev">LinkedIn</a>
+- GitHub: [@AbdullahSoftDev](https://github.com/AbdullahSoftDev)
+- LinkedIn: [abdullahsoftdev](https://linkedin.com/in/abdullahsoftdev)
 
-⭐ Explore the workflows, reuse what helps, and follow the repository as new automation agents are added.
-
-</div>
-
----
-
-<div align="center">
-
-**Built with n8n · Designed for automation · Continuously evolving**
-
-</div>
+If this workflow library helps you, consider starring the repository and checking back as more n8n automation examples are added.
